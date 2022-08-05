@@ -177,7 +177,7 @@ impl fmt::Display for ModbusReturnCoils
 pub enum ModbusReturnRegisters
 {
     Bad( ReturnBad ),
-    Good( ReturnGood< u16 > ),
+    Good( ReturnGood< i32 > ),
     None
 }
 
@@ -250,9 +250,9 @@ impl ModbusReturnRegisters
         return reply;
     }
 
-    pub fn unwrap_good ( self ) -> ReturnGood< u16 >
+    pub fn unwrap_good ( self ) -> ReturnGood< i32 >
     {
-        let reply : ReturnGood< u16 >;
+        let reply : ReturnGood< i32 >;
         
         match self
         {
@@ -282,7 +282,7 @@ fn test_modbus_return_registers_on_bad ()
 #[test]
 fn test_modbus_return_registers_on_good ()
 {
-    let test_data : Vec< u16 > = vec![ 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 ];
+    let test_data : Vec< i32 > = vec![ 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 ];
 
     let result : ModbusReturnRegisters = ModbusReturnRegisters::Good( ReturnGood::new ( test_data,
                                                                                         250 ) );
@@ -291,10 +291,10 @@ fn test_modbus_return_registers_on_good ()
     assert_eq! ( result.is_bad (), false );
     assert_eq! ( result.is_good (), true );
 
-    let mut result_good : ReturnGood< u16 > = result.unwrap_good ();
+    let mut result_good : ReturnGood< i32 > = result.unwrap_good ();
     assert_eq! ( result_good.get_duration_in_milliseconds (), 250 );
     
-    let result_data : Vec< u16 > = result_good.get_data ();
+    let result_data : Vec< i32 > = result_good.get_data ();
     assert_eq! ( result_data.len (), 8 );
 }
 

@@ -2,7 +2,7 @@
 
 use std::io::{Write, Read};
 use std::net::TcpStream;
-use core::modbustelegram::ModbusTelegram;
+use crate::core::modbustelegram::ModbusTelegram;
 
 //	===============================================================================================
 

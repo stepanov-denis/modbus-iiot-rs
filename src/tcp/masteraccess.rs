@@ -164,7 +164,7 @@ pub trait MasterAccess
     ///     client.disconnect();    
     /// }
     /// ```
-    fn read_holding_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< u16 >;
+    fn read_holding_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< i32 >;
 
     ///	MODBUS Function Code 4 (0x04)
     /// This function code is used to read from 1 to 125 contiguous 
@@ -195,7 +195,7 @@ pub trait MasterAccess
     ///     client.disconnect();    
     /// }
     /// ```
-    fn read_input_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< u16 >;
+    fn read_input_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< i32 >;
 
     /// MODBUS Function Code 5 (0x05)
     /// This function code is used to write a single output to 

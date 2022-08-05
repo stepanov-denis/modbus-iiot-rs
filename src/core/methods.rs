@@ -1,8 +1,8 @@
 
 
-use core::consts::*;
-use core::datatransformation::*;
-use core::modbustelegram::ModbusTelegram;
+use crate::core::consts::*;
+use crate::core::datatransformation::*;
+use crate::core::modbustelegram::ModbusTelegram;
 
 //	===============================================================================================
 
@@ -1153,16 +1153,16 @@ fn test_prepare_response_read_holding_registers ()
 {
 	let test_data : Vec< u8 > = vec![ 0x06, 0xF0, 0x0F, 0x00, 0xFF, 0xFF, 0x00 ];
 
-	let result : Vec< u16 > = prepare_response_read_holding_registers ( &test_data );
+	let result : Vec< i32 > = prepare_response_read_holding_registers ( &test_data );
 	assert_eq! ( result.len (), 3 );
 	assert_eq! ( result[ 0 ], 0xF00F );
 	assert_eq! ( result[ 1 ], 0x00FF );
 	assert_eq! ( result[ 2 ], 0xFF00 );
 }
 
-pub fn prepare_response_read_holding_registers ( payload : &Vec< u8 > ) -> Vec< u16 >
+pub fn prepare_response_read_holding_registers ( payload : &Vec< u8 > ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if is_payload_read_register_length_valid (&payload)
 	{
@@ -1191,16 +1191,16 @@ fn test_prepare_response_read_input_registers ()
 {
 	let test_data : Vec< u8 > = vec![ 0x06, 0xF0, 0x0F, 0x00, 0xFF, 0xFF, 0x00 ];
 
-	let result : Vec< u16 > = prepare_response_read_input_registers ( &test_data );
+	let result : Vec< i32 > = prepare_response_read_input_registers ( &test_data );
 	assert_eq! ( result.len (), 3 );
 	assert_eq! ( result[ 0 ], 0xF00F );
 	assert_eq! ( result[ 1 ], 0x00FF );
 	assert_eq! ( result[ 2 ], 0xFF00 );
 }
 
-pub fn prepare_response_read_input_registers ( payload : &Vec< u8 > ) -> Vec< u16 >
+pub fn prepare_response_read_input_registers ( payload : &Vec< u8 > ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if is_payload_read_register_length_valid (&payload)
 	{
@@ -1229,15 +1229,15 @@ fn test_prepare_response_write_multiple_coils ()
 {
 	let test_data : Vec< u8 > = vec![ 0x00, 0x01, 0x00, 0x03 ];
 
-	let result : Vec< u16 > = prepare_response_write_multiple_coils ( &test_data );
+	let result : Vec< i32 > = prepare_response_write_multiple_coils ( &test_data );
 	assert_eq! ( result.len (), 2 );
 	assert_eq! ( result[ 0 ], 0x0001 );
 	assert_eq! ( result[ 1 ], 0x0003 );
 }
 
-pub fn prepare_response_write_multiple_coils ( payload : &Vec< u8 > ) -> Vec< u16 >
+pub fn prepare_response_write_multiple_coils ( payload : &Vec< u8 > ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if is_payload_write_length_valid ( &payload )
 	{
@@ -1256,15 +1256,15 @@ fn test_prepare_response_write_multiple_registers ()
 {
 	let test_data : Vec< u8 > = vec![ 0x00, 0x01, 0x00, 0xFF ];
 
-	let result : Vec< u16 > = prepare_response_write_multiple_registers ( &test_data );
+	let result : Vec< i32 > = prepare_response_write_multiple_registers ( &test_data );
 	assert_eq! ( result.len (), 2 );
 	assert_eq! ( result[ 0 ], 0x0001 );
 	assert_eq! ( result[ 1 ], 0x00FF );
 }
 
-pub fn prepare_response_write_multiple_registers ( payload : &Vec< u8 > ) -> Vec< u16 >
+pub fn prepare_response_write_multiple_registers ( payload : &Vec< u8 > ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if is_payload_write_length_valid ( &payload )
 	{
@@ -1276,8 +1276,8 @@ pub fn prepare_response_write_multiple_registers ( payload : &Vec< u8 > ) -> Vec
 		if option_address.is_some () &&
 		   option_quantity.is_some ()
 		{
-			reply.push ( option_address.unwrap () );
-			reply.push ( option_quantity.unwrap () );
+			reply.push ( option_address.unwrap () as i32);
+			reply.push ( option_quantity.unwrap () as i32);
 		}
 	}
 
@@ -1338,15 +1338,15 @@ fn test_prepare_response_write_single_register ()
 {
 	let test_data : Vec< u8 > = vec![ 0x00, 0x01, 0x00, 0x03 ];
 
-	let result : Vec< u16 > = prepare_response_write_single_register ( &test_data );
+	let result : Vec< i32 > = prepare_response_write_single_register ( &test_data );
 	assert_eq! ( result.len (), 2 );
 	assert_eq! ( result[ 0 ], 0x0001 );
 	assert_eq! ( result[ 1 ], 0x0003 );
 }
 
-pub fn prepare_response_write_single_register ( payload : &Vec< u8 > ) -> Vec< u16 >
+pub fn prepare_response_write_single_register ( payload : &Vec< u8 > ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if is_payload_write_length_valid ( &payload )
 	{

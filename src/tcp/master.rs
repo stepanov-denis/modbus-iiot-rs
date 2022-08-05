@@ -3,15 +3,15 @@
 use std::net::{TcpStream, Shutdown};
 use std::result::Result;
 use std::time::Duration;
-use network::common::create_tcp_stream;
-use core::consts::*;
-use core::ethernet::*;
-use core::modbustelegram::*;
-use core::modbusreturn::*;
-use core::methods::*;
-use core::timehandling::*;
-use tcp::masteraccess::*;
-use tcp::streamtelegram::*;
+use crate::network::common::create_tcp_stream;
+use crate::core::consts::*;
+use crate::core::ethernet::*;
+use crate::core::modbustelegram::*;
+use crate::core::modbusreturn::*;
+use crate::core::methods::*;
+use crate::core::timehandling::*;
+use crate::tcp::masteraccess::*;
+use crate::tcp::streamtelegram::*;
 
 //	===============================================================================================
 
@@ -326,7 +326,7 @@ impl EthernetMaster for TcpClient
 				if verify_function_code ( &request.unwrap (),
 										  &response )
 				{
-					let response_data : Vec< u16 > = prepare_response_read_holding_registers ( &response.get_payload ().unwrap () );
+					let response_data : Vec< i32 > = prepare_response_read_holding_registers ( &response.get_payload ().unwrap () );
 
 					reply = process_response_of_registers ( response_data,
 															&start_time );
@@ -368,7 +368,7 @@ impl EthernetMaster for TcpClient
 				if verify_function_code ( &request.unwrap (),
 										  &response )
 				{
-					let response_data : Vec< u16 > = prepare_response_read_input_registers ( &response.get_payload ().unwrap () );
+					let response_data : Vec< i32 > = prepare_response_read_input_registers ( &response.get_payload ().unwrap () );
 
 					reply = process_response_of_registers ( response_data,
 															&start_time );
@@ -452,7 +452,7 @@ impl EthernetMaster for TcpClient
 				if verify_function_code ( &request.unwrap (),
 										  &response )
 				{
-					let response_data : Vec< u16 > = prepare_response_write_single_register ( &response.get_payload ().unwrap () );
+					let response_data : Vec< i32 > = prepare_response_write_single_register ( &response.get_payload ().unwrap () );
 
 					reply = process_response_of_registers ( response_data,
 															&start_time );
@@ -495,7 +495,7 @@ impl EthernetMaster for TcpClient
 				if verify_function_code ( &request.unwrap (),
 										  &response )
 				{
-					let response_data : Vec< u16 > = prepare_response_write_multiple_coils ( &response.get_payload ().unwrap () );
+					let response_data : Vec< i32 > = prepare_response_write_multiple_coils ( &response.get_payload ().unwrap () );
 
 					reply = process_response_of_registers ( response_data,
 															&start_time );
@@ -537,7 +537,7 @@ impl EthernetMaster for TcpClient
 				if verify_function_code ( &request.unwrap (),
 										  &response )
 				{
-					let response_data : Vec< u16 > = prepare_response_write_multiple_registers ( &response.get_payload ().unwrap () );
+					let response_data : Vec< i32 > = prepare_response_write_multiple_registers ( &response.get_payload ().unwrap () );
 
 					reply = process_response_of_registers ( response_data,
 															&start_time );
@@ -603,18 +603,18 @@ fn test_process_response_of_registers ()
 {
 	let timestamp : Timestamp = Timestamp::new ();
 
-	let test_data_1 : Vec< u16 > = vec![ 0x000A, 0xFFFF, 0x00A8, 0xFF00 ];
+	let test_data_1 : Vec< i32 > = vec![ 0x000A, 0xFFFF, 0x00A8, 0xFF00 ];
 	let result_1 : ModbusReturnRegisters = process_response_of_registers ( test_data_1,
 																   		   &timestamp );
 	assert! ( result_1.is_good () );
 
-	let test_data_2 : Vec< u16 > = vec![];
+	let test_data_2 : Vec< i32 > = vec![];
 	let result_2 : ModbusReturnRegisters = process_response_of_registers ( test_data_2,
 																   		   &timestamp );
 	assert! ( result_2.is_bad () );
 }
 
-fn process_response_of_registers ( response_data : Vec< u16 >, start_time : &Timestamp ) -> ModbusReturnRegisters
+fn process_response_of_registers ( response_data : Vec< i32 >, start_time : &Timestamp ) -> ModbusReturnRegisters
 {
 	let reply : ModbusReturnRegisters;
 
@@ -675,9 +675,9 @@ impl MasterAccess for TcpClient
 		return reply;
 	}
 
-	fn read_holding_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< u16 >
+	fn read_holding_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< i32 >
 	{
-		let reply : Vec< u16 >;
+		let reply : Vec< i32 >;
 
 		let response : ModbusReturnRegisters = EthernetMaster::read_holding_registers ( self,
 																						address,
@@ -695,9 +695,9 @@ impl MasterAccess for TcpClient
 		return reply;
 	}
 
-	fn read_input_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< u16 >
+	fn read_input_registers ( &mut self, address : u16, quantity : u16 ) -> Vec< i32 >
 	{
-		let reply : Vec< u16 >;
+		let reply : Vec< i32 >;
 
 		let response : ModbusReturnRegisters = EthernetMaster::read_input_registers ( self,
 																					  address,
@@ -807,21 +807,21 @@ fn transform_modbus_return_coils ( returned_coils : ModbusReturnCoils ) -> Vec< 
 #[test]
 fn test_transform_modbus_return_registers ()
 {
-	let result_1 : Vec< u16 > = transform_modbus_return_registers ( ModbusReturnRegisters::None );
+	let result_1 : Vec< i32 > = transform_modbus_return_registers ( ModbusReturnRegisters::None );
 	assert_eq! ( result_1.len (), 0 );
 
 	let test_data_1 : ReturnBad = ReturnBad::new_with_message ( "some error message" );
-	let result_2 : Vec< u16 > = transform_modbus_return_registers ( ModbusReturnRegisters::Bad ( test_data_1 ) );
+	let result_2 : Vec< i32 > = transform_modbus_return_registers ( ModbusReturnRegisters::Bad ( test_data_1 ) );
 	assert_eq! ( result_2.len (), 0 );
 	
-	let test_data_2 : ReturnGood< u16 > = ReturnGood::new ( vec![ 123, 456, 789 ], 1 );
-	let result_3 : Vec< u16 > = transform_modbus_return_registers ( ModbusReturnRegisters::Good ( test_data_2 ) );
+	let test_data_2 : ReturnGood< i32 > = ReturnGood::new ( vec![ 123, 456, 789 ], 1 );
+	let result_3 : Vec< i32 > = transform_modbus_return_registers ( ModbusReturnRegisters::Good ( test_data_2 ) );
 	assert_eq! ( result_3.len (), 3 );
 }
 
-fn transform_modbus_return_registers ( returned_registers : ModbusReturnRegisters ) -> Vec< u16 >
+fn transform_modbus_return_registers ( returned_registers : ModbusReturnRegisters ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	if returned_registers.is_good ()
 	{

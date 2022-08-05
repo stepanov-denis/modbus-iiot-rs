@@ -283,35 +283,35 @@ fn test_transform_bytes_to_words ()
 {
 	let test_array : Vec< u8 > = vec![ 0x01, 0x0A, 0xF0, 0x0F, 0x0A, 0x10, 0xFF, 0xFF ];
 
-	let result_1 : Vec< u16 > =	transform_bytes_to_words ( &test_array, 
+	let result_1 : Vec< i32 > =	transform_bytes_to_words ( &test_array, 
 														   0,
 														   2 );
 	assert_eq! ( result_1.len (), 2 );
 	assert_eq! ( result_1[ 0 ], 0x010A );
 	assert_eq! ( result_1[ 1 ], 0xF00F );
 
-	let result_2 : Vec< u16 > =	transform_bytes_to_words ( &test_array, 
+	let result_2 : Vec< i32 > =	transform_bytes_to_words ( &test_array, 
 														   2, 
 														   2 );
 	assert_eq! ( result_2.len (), 2 );
 	assert_eq! ( result_2[ 0 ], 0xF00F );
 	assert_eq! ( result_2[ 1 ], 0x0A10 );
 
-	let result_3 : Vec< u16 > =	transform_bytes_to_words ( &test_array, 
+	let result_3 : Vec< i32 > =	transform_bytes_to_words ( &test_array, 
 														   6, 
 														   1 );
 	assert_eq! ( result_3.len (), 1 );
 	assert_eq! ( result_3[ 0 ], 0xFFFF );
 
-	let result_4 : Vec< u16 > =	transform_bytes_to_words ( &test_array, 
+	let result_4 : Vec< i32 > =	transform_bytes_to_words ( &test_array, 
 														   6, 
 														   2 );
 	assert_eq! ( result_4.len (), 0 );
 }
 
-pub fn transform_bytes_to_words ( databytes : &Vec< u8 >, start_index : u8, word_count :u8 ) -> Vec< u16 >
+pub fn transform_bytes_to_words ( databytes : &Vec< u8 >, start_index : u8, word_count :u8 ) -> Vec< i32 >
 {
-	let mut reply : Vec< u16 > = vec![];
+	let mut reply : Vec< i32 > = vec![];
 
 	let source_length : u8 = databytes.len () as u8;
 	let verify_length : u8 = start_index + ( word_count * 2 );
@@ -327,7 +327,7 @@ pub fn transform_bytes_to_words ( databytes : &Vec< u8 >, start_index : u8, word
 											 working_index );
 			working_index += 2;
 
-			reply.push ( word );
+			reply.push ( word as i32);
 		}
 	}
 

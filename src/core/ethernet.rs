@@ -1,6 +1,6 @@
 
 
-use core::modbusreturn::{ModbusReturnCoils, ModbusReturnRegisters};
+use crate::core::modbusreturn::{ModbusReturnCoils, ModbusReturnRegisters};
 
 
 /// MODBUS API (based on the technical protocol specification)
